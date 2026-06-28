@@ -146,3 +146,21 @@ Trust the architecture.
 
 When the foundation is sound,
 good decisions become easier.
+
+---
+
+019
+
+Begin every work session from the repository root.
+
+Stand in the workshop before entering one of its rooms.
+
+---
+
+020
+
+Separate the project from the environment.
+
+The repository contains the work.
+The machine provides the tools.
+When a build fails, determine which one needs attention before changing either.
