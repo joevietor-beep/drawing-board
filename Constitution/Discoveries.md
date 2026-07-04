@@ -164,3 +164,13 @@ Separate the project from the environment.
 The repository contains the work.
 The machine provides the tools.
 When a build fails, determine which one needs attention before changing either.
+
+---
+
+021
+
+Every commit should tell part of the story of the workshop.
+
+Not: Fixed issue, But: The workshop opens.
+
+The first card. Sanctuary awakens. Those are chapters in the life of the project.
