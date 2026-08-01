@@ -1,0 +1,340 @@
+diff --git a/Prototype/workbench-app/index.html b/Prototype/workbench-app/index.html
+index 1d34920..a114224 100644
+--- a/Prototype/workbench-app/index.html
++++ b/Prototype/workbench-app/index.html
+@@ -1,31 +1,11 @@
+ <!doctype html>
+ <html lang="en">
+   <head>
+     <meta charset="UTF-8" />
+-    <link rel="stylesheet" href="/src/styles.css" />
+     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+-    <title>Workbench</title>
++    <meta name="theme-color" content="#f5f1e8" />
++    <title>Drawing Board</title>
+     <script type="module" src="/src/main.ts" defer></script>
+   </head>
+-
+-  <body>
+-  <main class="container">
+-    <h1>Workbench</h1>
+-
+-    <h2>A craftsman's environment</h2>
+-
+-    <p>Observation</p>
+-    <p>Discernment</p>
+-    <p>Contribution</p>
+-
+-    <br />
+-
+-    <p>Version 0.1</p>
+-
+-    <p><em>The workshop is open.</em></p>
+-  </main>
+-</body>
++  <body><div id="app"></div></body>
+ </html>
+diff --git a/Prototype/workbench-app/src/main.ts b/Prototype/workbench-app/src/main.ts
+index 5191e93..e7bad54 100644
+--- a/Prototype/workbench-app/src/main.ts
++++ b/Prototype/workbench-app/src/main.ts
+@@ -1,23 +1,114 @@
+-import { invoke } from "@tauri-apps/api/core";
++import "./styles.css";
++import risingEntrepreneur from "./assets/rising-entrepreneur.png";
+ 
+-let greetInputEl: HTMLInputElement | null;
+-let greetMsgEl: HTMLElement | null;
++type Space = "sanctuary" | "boardroom" | "studio";
+ 
+-async function greet() {
+-  if (greetMsgEl && greetInputEl) {
+-    // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
+-    greetMsgEl.textContent = await invoke("greet", {
+-      name: greetInputEl.value,
+-    });
+-  }
+-}
++const rooms: Record<Space, { title: string; lead: string; tools: string[] }> = {
++  sanctuary: {
++    title: "Begin with awareness.",
++    lead: "A quiet place to arrive before the work begins.",
++    tools: ["Morning Meditation", "Journal", "Constitution"],
++  },
++  boardroom: {
++    title: "Make the important moves visible.",
++    lead: "A clear room for commitments, conversations, and the work in motion.",
++    tools: ["Today's Focus", "DealDocs", "Prospect Radar", "Analytics", "Projects"],
++  },
++  studio: {
++    title: "Turn the work into something shareable.",
++    lead: "A focused collection of creative tools and working surfaces.",
++    tools: ["Article Architect", "Social Vibe", "Image Roll", "Video Edits", "Plan Notes"],
++  },
++};
+ 
+-window.addEventListener("DOMContentLoaded", () => {
+-  greetInputEl = document.querySelector("#greet-input");
+-  greetMsgEl = document.querySelector("#greet-msg");
+-  document.querySelector("#greet-form")?.addEventListener("submit", (e) => {
+-    e.preventDefault();
+-    greet();
+-  });
+-});
++const details: Record<string, string> = {
++  "Today's Focus": "Must Do · Waiting On · Wins",
++  DealDocs: "Recent conversations · Follow-ups · Pipeline",
++  "Prospect Radar": "Yellow Pages · Apollo · LinkedIn · Lead imports",
++  Analytics: "Calls made · Response rate · Website traffic · Revenue trends",
++  Projects: "WordPress sites · Client work · Internal development",
++  "Article Architect": "Long-form writing.",
++  "Social Vibe": "Facebook · LinkedIn · Instagram · X",
++  "Image Roll": "Prompt library · Editorial images · Hero graphics",
++  "Video Edits": "Shotcut · DaVinci · Captions · Shorts",
++  "Plan Notes": "Whiteboard · Brainstorming · Mind maps · Meeting notes",
++  Journal: "Make space for what is present and what matters today.",
++  Constitution: "Return to the principles that hold the work together.",
++};
++
++let space: Space | null = null;
++let tool: string | null = null;
++let meditationStep = 0;
++
++const app = document.querySelector<HTMLDivElement>("#app")!;
++
++function shell(content: string) {
++  return `<div class="app-shell">
++    <header class="topbar">
++      <button class="brand" data-home><b>DB</b> Drawing Board</button>
++      <span>${space ? rooms[space].title : "A deliberate workspace"}</span>
++      <button class="quiet-button" data-meditation>Morning meditation ↗</button>
++    </header>${content}</div>`;
++}
++
++function home() {
++  return shell(`<main class="home">
++    <p class="eyebrow">One chapter. One room. One careful stone at a time.</p>
++    <h1>A place to see the whole of your work.</h1>
++    <p class="lead">Enter through the room that serves this moment.</p>
++    <section class="cards">
++      <button class="room sanctuary" data-space="sanctuary">
++        <img src="${risingEntrepreneur}" alt="Sunrise landscape" />
++        <span><small>Sanctuary</small><strong>Begin with awareness.</strong><em>Meditation · Journal · Constitution</em></span>
++      </button>
++      <button class="room boardroom" data-space="boardroom">
++        <span><small>Board Room</small><strong>Bring the day into focus.</strong><em>Priorities · Pipeline · Projects</em></span>
++      </button>
++      <button class="room studio" data-space="studio">
++        <span><small>Studio</small><strong>Make something useful.</strong><em>Writing · Images · Video · Notes</em></span>
++      </button>
++    </section>
++  </main>`);
++}
++
++function roomView() {
++  const room = rooms[space!];
++  return shell(`<main class="page">
++    <button class="back" data-home>← All rooms</button>
++    <p class="eyebrow">${space}</p><h1>${room.title}</h1><p class="lead">${room.lead}</p>
++    <section class="tools">${room.tools.map((item, index) => `
++      <button class="tool" data-tool="${item}">
++        <small>0${index + 1}</small><strong>${item}</strong>
++        <span>${details[item] ?? "A guided moment to settle and choose your intention."}</span><i>↗</i>
++      </button>`).join("")}
++    </section>
++  </main>`);
++}
++
++function meditation() {
++  const steps = [
++    ["Arrive", "Let the day wait at the door. Notice where you are."],
++    ["Breathe", "Take three unhurried breaths. There is nothing to solve yet."],
++    ["Notice", "What is asking for your attention beneath the noise?"],
++    ["Intend", "Name one way you want to show up in the next chapter."],
++  ];
++  const [title, copy] = steps[meditationStep];
++  return shell(`<main class="meditation">
++    <img src="${risingEntrepreneur}" alt="" /><div class="wash"></div>
++    <button class="close" data-close>Close</button>
++    <section class="meditation-card">
++      <p class="eyebrow">Morning meditation · ${meditationStep + 1} of 4</p>
++      <h1>${title}</h1><p>${copy}</p>
++      <div class="progress"><span style="width:${(meditationStep + 1) * 25}%"></span></div>
++      <div><button class="text-button" data-previous ${meditationStep === 0 ? "disabled" : ""}>Back</button>
++      <button class="continue" data-next>${meditationStep === 3 ? "Complete" : "Continue"} →</button></div>
++    </section>
++  </main>`);
++}
++
++function placeholder() {
++  return shell(`<main class="page placeholder">
++    <button class="back" data-close>← ${space}</button>
++    <div><p class="eyebrow">Workspace</p><h1>${tool}</h1>
++    <p class="lead">${details[tool!] ?? "This workspace is ready for its first real connection."}</p>
++    <hr /><p>This is a focused placeholder in the broad-strokes release. Its dedicated workflow and outside connections can be added one tool at a time.</p></div>
++  </main>`);
++}
++
++function render() {
++  app.innerHTML = tool === "Morning Meditation" ? meditation() : tool ? placeholder() : space ? roomView() : home();
++  app.querySelectorAll<HTMLElement>("[data-space]").forEach(el => el.onclick = () => { space = el.dataset.space as Space; render(); });
++  app.querySelectorAll<HTMLElement>("[data-tool]").forEach(el => el.onclick = () => { tool = el.dataset.tool!; render(); });
++  app.querySelector<HTMLElement>("[data-home]")?.addEventListener("click", () => { space = null; tool = null; render(); });
++  app.querySelector<HTMLElement>("[data-meditation]")?.addEventListener("click", () => { space = "sanctuary"; tool = "Morning Meditation"; meditationStep = 0; render(); });
++  app.querySelector<HTMLElement>("[data-close]")?.addEventListener("click", () => { tool = null; render(); });
++  app.querySelector<HTMLElement>("[data-next]")?.addEventListener("click", () => { meditationStep = (meditationStep + 1) % 4; if (!meditationStep) tool = null; render(); });
++  app.querySelector<HTMLElement>("[data-previous]")?.addEventListener("click", () => { meditationStep = Math.max(0, meditationStep - 1); render(); });
++}
++
++render();
+diff --git a/Prototype/workbench-app/src/styles.css b/Prototype/workbench-app/src/styles.css
+index 2cf4d21..ce7a4f2 100644
+--- a/Prototype/workbench-app/src/styles.css
++++ b/Prototype/workbench-app/src/styles.css
+@@ -1,97 +1,59 @@
+-.logo.vite:hover {
+-  filter: drop-shadow(0 0 2em #747bff);
+-}
+-
+-.logo.typescript:hover {
+-  filter: drop-shadow(0 0 2em #2d79c7);
+-}
+-:root {
+-  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
+-  font-size: 16px;
+-  line-height: 24px;
+-  font-weight: 400;
+-
+-  color: #0f0f0f;
+-  background-color: #f6f6f6;
+-
+-  font-synthesis: none;
+-  text-rendering: optimizeLegibility;
+-  -webkit-font-smoothing: antialiased;
+-  -moz-osx-font-smoothing: grayscale;
+-  -webkit-text-size-adjust: 100%;
+-}
+-
+-.container {
+-  margin: 0;
+-  padding-top: 10vh;
+-  display: flex;
+-  flex-direction: column;
+-  justify-content: center;
+-  text-align: center;
+-}
+-
+-.logo {
+-  height: 6em;
+-  padding: 1.5em;
+-  will-change: filter;
+-  transition: 0.75s;
+-}
+-
+-.logo.tauri:hover {
+-  filter: drop-shadow(0 0 2em #24c8db);
+-}
+-
+-.row {
+-  display: flex;
+-  justify-content: center;
+-}
+-
+-a {
+-  font-weight: 500;
+-  color: #646cff;
+-  text-decoration: inherit;
+-}
+-
+-a:hover {
+-  color: #535bf2;
+-}
+-
+-h1 {
+-  text-align: center;
+-}
+-
+-input,
+-button {
+-  border-radius: 8px;
+-  border: 1px solid transparent;
+-  padding: 0.6em 1.2em;
+-  font-size: 1em;
+-  font-weight: 500;
+-  font-family: inherit;
+-  color: #0f0f0f;
+-  background-color: #ffffff;
+-  transition: border-color 0.25s;
+-  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+-}
+-
+-button {
+-  cursor: pointer;
+-}
+-
+-button:hover {
+-  border-color: #396cd8;
+-}
+-button:active {
+-  border-color: #396cd8;
+-  background-color: #e8e8e8;
+-}
+-
+-input,
+-button {
+-  outline: none;
+-}
+-
+-#greet-input {
+-  margin-right: 5px;
+-}
+-
+-@media (prefers-color-scheme: dark) {
+-  :root {
+-    color: #f6f6f6;
+-    background-color: #2f2f2f;
+-  }
+-
+-  a:hover {
+-    color: #24c8db;
+-  }
+-
+-  input,
+-  button {
+-    color: #ffffff;
+-    background-color: #0f0f0f98;
+-  }
+-  button:active {
+-    background-color: #0f0f0f69;
+-  }
+-}
++@import url("https://fonts.googleapis.com/css2?family=DM+Mono&family=DM+Sans:wght@400;500;600&family=Playfair+Display:wght@500;600&display=swap");
++:root{font-family:"DM Sans",sans-serif;color:#142936;background:#f5f1e8}*{box-sizing:border-box}body{margin:0}button{font:inherit;border:0;cursor:pointer;color:inherit}.app-shell{min-height:100vh}.topbar{height:80px;padding:0 5.5vw;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #d9ddd7;font-size:13px;color:#64726e}.brand,.quiet-button,.back,.text-button,.close{background:transparent}.brand{display:flex;align-items:center;gap:10px;color:#142936;font-weight:600}.brand b{display:grid;place-items:center;width:30px;height:30px;background:#164c5d;color:#fff;font:10px "DM Mono"}.quiet-button{color:#386575}.home,.page{max-width:1260px;margin:auto;padding:8vh 5.5vw}.eyebrow{font:11px "DM Mono";letter-spacing:.1em;text-transform:uppercase;color:#77827d}.home h1,.page h1,.meditation-card h1{max-width:730px;margin:15px 0;font:500 clamp(42px,6vw,76px)/1 "Playfair Display",serif;letter-spacing:-.06em}.lead{max-width:700px;color:#63716f;font-size:17px;line-height:1.6}.cards{display:grid;grid-template-columns:1.15fr 1fr 1fr;gap:16px;margin-top:55px}.room{position:relative;min-height:375px;overflow:hidden;text-align:left;color:#fff;background:#164c5d;transition:.2s}.room:hover,.tool:hover{transform:translateY(-4px);box-shadow:0 18px 35px #14293625}.room img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(.75)}.sanctuary:after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 35%,#102f38d9)}.boardroom{background:linear-gradient(140deg,#3f1614,#a64d38 60%,#472019)}.studio{background:radial-gradient(circle at 82% 18%,#eab955 0 20%,transparent 21%),#143e46}.room span{z-index:1;position:absolute;bottom:26px;left:26px;right:22px;display:flex;flex-direction:column;gap:8px}.room small{font:10px "DM Mono";letter-spacing:.1em;text-transform:uppercase}.room strong{font:500 30px/1.06 "Playfair Display",serif}.room em{font-size:12px;font-style:normal;opacity:.88}.back{padding:0;color:#62716d}.page>.eyebrow{margin-top:50px}.tools{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:40px}.tool{min-height:205px;position:relative;padding:24px;text-align:left;background:#fffdf9;border:1px solid #dfe2dc}.tool small{font:10px "DM Mono";color:#87918c}.tool strong{display:block;margin:37px 0 9px;font:500 27px "Playfair Display",serif}.tool span{display:block;color:#65736f;font-size:13px;line-height:1.5}.tool i{position:absolute;right:21px;bottom:18px;color:#2b697a;font-style:normal}.placeholder{min-height:calc(100vh - 80px);display:grid;align-content:start;gap:70px}.placeholder>div{max-width:700px}.placeholder hr{width:80px;margin:35px 0;border:0;border-top:2px solid #d6ad55}.placeholder div>p:last-child{max-width:520px;color:#63716f;line-height:1.6}.meditation{min-height:calc(100vh - 80px);position:relative;display:grid;place-items:center;overflow:hidden}.meditation>img,.wash{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.wash{background:linear-gradient(90deg,#0b232ad6,#0b232a45)}.close{position:absolute;z-index:1;right:5.5vw;top:25px;color:#fff}.meditation-card{z-index:1;width:min(525px,90vw);padding:42px;background:#0d2f33c4;border:1px solid #ffffff44;color:#f9f5ec}.meditation-card .eyebrow{color:#d7d4bf}.meditation-card h1{font-size:58px}.meditation-card>p:not(.eyebrow){line-height:1.6}.progress{height:2px;background:#ffffff44;margin:32px 0}.progress span{display:block;height:100%;background:#e9c76c}.meditation-card>div:last-child{display:flex;justify-content:space-between}.text-button{color:#d9dfd5}.continue{padding:12px 17px;background:#f4e3ad;color:#173b3c;font-weight:600}@media(max-width:800px){.topbar{padding:0 24px}.topbar>span{display:none}.home,.page{padding-left:24px;padding-right:24px}.cards,.tools{grid-template-columns:1fr}.room{min-height:275px}.meditation{align-items:end}.meditation-card{margin:24px;padding:28px}}
+diff --git a/Prototype/workbench-app/src-tauri/tauri.conf.json b/Prototype/workbench-app/src-tauri/tauri.conf.json
+index b39c584..36f3830 100644
+--- a/Prototype/workbench-app/src-tauri/tauri.conf.json
++++ b/Prototype/workbench-app/src-tauri/tauri.conf.json
+@@ -1,6 +1,6 @@
+ {
+   "$schema": "https://schema.tauri.app/config/2",
+-  "productName": "workbench-app",
++  "productName": "Drawing Board",
+   "version": "0.1.0",
+   "identifier": "com.creamydigital.workbench",
+   "build": {
+@@ -12,9 +12,11 @@
+   "app": {
+     "withGlobalTauri": true,
+     "windows": [
+       {
+-        "title": "workbench-app",
+-        "width": 800,
+-        "height": 600
++        "title": "Drawing Board",
++        "width": 1280,
++        "height": 820,
++        "minWidth": 720,
++        "minHeight": 600
+       }
+     ],
+     "security": {
