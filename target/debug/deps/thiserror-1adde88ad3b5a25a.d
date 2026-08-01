@@ -1,0 +1,14 @@
+/run/media/cocomojo/Projects-Docs/drawing-board/target/debug/deps/thiserror-1adde88ad3b5a25a.d: /var/home/cocomojo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.19/src/lib.rs /var/home/cocomojo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.19/src/aserror.rs /var/home/cocomojo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.19/src/display.rs /var/home/cocomojo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.19/src/var.rs /var/home/cocomojo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.19/src/private.rs /run/media/cocomojo/Projects-Docs/drawing-board/target/debug/build/thiserror-fa27a7864ac75201/out/private.rs
+
+/run/media/cocomojo/Projects-Docs/drawing-board/target/debug/deps/libthiserror-1adde88ad3b5a25a.rlib: /var/home/cocomojo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.19/src/lib.rs /var/home/cocomojo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.19/src/aserror.rs /var/home/cocomojo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.19/src/display.rs /var/home/cocomojo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.19/src/var.rs /var/home/cocomojo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.19/src/private.rs /run/media/cocomojo/Projects-Docs/drawing-board/target/debug/build/thiserror-fa27a7864ac75201/out/private.rs
+
+/run/media/cocomojo/Projects-Docs/drawing-board/target/debug/deps/libthiserror-1adde88ad3b5a25a.rmeta: /var/home/cocomojo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.19/src/lib.rs /var/home/cocomojo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.19/src/aserror.rs /var/home/cocomojo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.19/src/display.rs /var/home/cocomojo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.19/src/var.rs /var/home/cocomojo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.19/src/private.rs /run/media/cocomojo/Projects-Docs/drawing-board/target/debug/build/thiserror-fa27a7864ac75201/out/private.rs
+
+/var/home/cocomojo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.19/src/lib.rs:
+/var/home/cocomojo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.19/src/aserror.rs:
+/var/home/cocomojo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.19/src/display.rs:
+/var/home/cocomojo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.19/src/var.rs:
+/var/home/cocomojo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.19/src/private.rs:
+/run/media/cocomojo/Projects-Docs/drawing-board/target/debug/build/thiserror-fa27a7864ac75201/out/private.rs:
+
+# env-dep:OUT_DIR=/run/media/cocomojo/Projects-Docs/drawing-board/target/debug/build/thiserror-fa27a7864ac75201/out

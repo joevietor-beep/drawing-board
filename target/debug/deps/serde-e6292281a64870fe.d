@@ -1,0 +1,14 @@
+/run/media/cocomojo/Projects-Docs/drawing-board/target/debug/deps/serde-e6292281a64870fe.d: /var/home/cocomojo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.229/src/lib.rs /var/home/cocomojo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.229/src/integer128.rs /var/home/cocomojo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.229/src/private/mod.rs /var/home/cocomojo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.229/src/private/de.rs /var/home/cocomojo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.229/src/private/ser.rs /run/media/cocomojo/Projects-Docs/drawing-board/target/debug/build/serde-7d0e90fcdeb6af82/out/private.rs
+
+/run/media/cocomojo/Projects-Docs/drawing-board/target/debug/deps/libserde-e6292281a64870fe.rlib: /var/home/cocomojo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.229/src/lib.rs /var/home/cocomojo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.229/src/integer128.rs /var/home/cocomojo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.229/src/private/mod.rs /var/home/cocomojo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.229/src/private/de.rs /var/home/cocomojo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.229/src/private/ser.rs /run/media/cocomojo/Projects-Docs/drawing-board/target/debug/build/serde-7d0e90fcdeb6af82/out/private.rs
+
+/run/media/cocomojo/Projects-Docs/drawing-board/target/debug/deps/libserde-e6292281a64870fe.rmeta: /var/home/cocomojo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.229/src/lib.rs /var/home/cocomojo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.229/src/integer128.rs /var/home/cocomojo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.229/src/private/mod.rs /var/home/cocomojo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.229/src/private/de.rs /var/home/cocomojo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.229/src/private/ser.rs /run/media/cocomojo/Projects-Docs/drawing-board/target/debug/build/serde-7d0e90fcdeb6af82/out/private.rs
+
+/var/home/cocomojo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.229/src/lib.rs:
+/var/home/cocomojo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.229/src/integer128.rs:
+/var/home/cocomojo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.229/src/private/mod.rs:
+/var/home/cocomojo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.229/src/private/de.rs:
+/var/home/cocomojo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.229/src/private/ser.rs:
+/run/media/cocomojo/Projects-Docs/drawing-board/target/debug/build/serde-7d0e90fcdeb6af82/out/private.rs:
+
+# env-dep:OUT_DIR=/run/media/cocomojo/Projects-Docs/drawing-board/target/debug/build/serde-7d0e90fcdeb6af82/out
