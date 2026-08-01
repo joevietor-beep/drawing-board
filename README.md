@@ -1,18 +1,15 @@
 # Workbench
 
-Workbench is a digital workshop for stewardship, engagement, and contribution.
+# Drawing Board
 
-It exists to help its craftsman cultivate awareness, engage thoughtfully with people, preserve understanding, and create meaningful contributions.
+Drawing Board is a desktop application for focused thinking, creative work, business operations, and AI-assisted productivity.
 
-Workbench is organized into three rooms:
+The project was originally referred to as "Workbench" during early design and planning. References to "Workbench" in existing documentation refer to Drawing Board unless otherwise noted.
 
-- **Sanctuary** — Awareness
-- **Workbench** — Engagement
-- **Atelier** — Contribution
-
+Drawing Board is the official project and application name going forward.
 Artificial intelligence serves as a trusted companion, extending observation, memory, and discernment while leaving judgment to the craftsman.
 
-This repository contains the philosophy, architecture, and software that together form Workbench.
+This repository contains the philosophy, architecture, and software that together form Drawing Board.
 
 ---
 
