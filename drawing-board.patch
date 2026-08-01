@@ -1,340 +1,517 @@
-diff --git a/Prototype/workbench-app/index.html b/Prototype/workbench-app/index.html
-index 1d34920..a114224 100644
---- a/Prototype/workbench-app/index.html
-+++ b/Prototype/workbench-app/index.html
-@@ -1,31 +1,11 @@
- <!doctype html>
- <html lang="en">
-   <head>
-     <meta charset="UTF-8" />
--    <link rel="stylesheet" href="/src/styles.css" />
-     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
--    <title>Workbench</title>
-+    <meta name="theme-color" content="#f5f1e8" />
-+    <title>Drawing Board</title>
-     <script type="module" src="/src/main.ts" defer></script>
-   </head>
--
--  <body>
--  <main class="container">
--    <h1>Workbench</h1>
--
--    <h2>A craftsman's environment</h2>
--
--    <p>Observation</p>
--    <p>Discernment</p>
--    <p>Contribution</p>
--
--    <br />
--
--    <p>Version 0.1</p>
--
--    <p><em>The workshop is open.</em></p>
--  </main>
--</body>
-+  <body><div id="app"></div></body>
- </html>
-diff --git a/Prototype/workbench-app/src/main.ts b/Prototype/workbench-app/src/main.ts
-index 5191e93..e7bad54 100644
---- a/Prototype/workbench-app/src/main.ts
-+++ b/Prototype/workbench-app/src/main.ts
-@@ -1,23 +1,114 @@
--import { invoke } from "@tauri-apps/api/core";
-+import "./styles.css";
-+import risingEntrepreneur from "./assets/rising-entrepreneur.png";
- 
--let greetInputEl: HTMLInputElement | null;
--let greetMsgEl: HTMLElement | null;
-+type Space = "sanctuary" | "boardroom" | "studio";
- 
--async function greet() {
--  if (greetMsgEl && greetInputEl) {
--    // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
--    greetMsgEl.textContent = await invoke("greet", {
--      name: greetInputEl.value,
--    });
--  }
--}
-+const rooms: Record<Space, { title: string; lead: string; tools: string[] }> = {
-+  sanctuary: {
-+    title: "Begin with awareness.",
-+    lead: "A quiet place to arrive before the work begins.",
-+    tools: ["Morning Meditation", "Journal", "Constitution"],
+diff --git a/Cargo.toml b/Cargo.toml
+new file mode 100644
+index 0000000..551c9fd
+--- /dev/null
++++ b/Cargo.toml
+@@ -0,0 +1,3 @@
++[workspace]
++members = ["src-tauri"]
++resolver = "2"
+diff --git a/package.json b/package.json
+new file mode 100644
+index 0000000..5f947f2
+--- /dev/null
++++ b/package.json
+@@ -0,0 +1,22 @@
++{
++  "name": "drawing-board",
++  "private": true,
++  "version": "0.1.0",
++  "type": "module",
++  "scripts": {
++    "dev": "vite",
++    "build": "tsc && vite build",
++    "preview": "vite preview",
++    "tauri": "tauri"
 +  },
-+  boardroom: {
-+    title: "Make the important moves visible.",
-+    lead: "A clear room for commitments, conversations, and the work in motion.",
-+    tools: ["Today's Focus", "DealDocs", "Prospect Radar", "Analytics", "Projects"],
++  "dependencies": {
++    "@tauri-apps/api": "^2.0.0"
++  },
++  "devDependencies": {
++    "@tauri-apps/cli": "^2.0.0",
++    "typescript": "~5.6.2",
++    "vite": "^6.0.0"
++  }
++}
+diff --git a/tsconfig.json b/tsconfig.json
+new file mode 100644
+index 0000000..9da4d3c
+--- /dev/null
++++ b/tsconfig.json
+@@ -0,0 +1,22 @@
++{
++  "compilerOptions": {
++    "target": "ES2020",
++    "useDefineForClassFields": true,
++    "module": "ESNext",
++    "lib": ["ES2020", "DOM", "DOM.Iterable"],
++    "skipLibCheck": true,
++    "moduleResolution": "bundler",
++    "allowImportingTsExtensions": false,
++    "resolveJsonModule": true,
++    "isolatedModules": true,
++    "noEmit": true,
++    "strict": true,
++    "noUnusedLocals": true,
++    "noUnusedParameters": true,
++    "noFallthroughCasesInSwitch": true
++  },
++  "include": ["src"]
++}
+diff --git a/vite.config.ts b/vite.config.ts
+new file mode 100644
+index 0000000..e0ac6d0
+--- /dev/null
++++ b/vite.config.ts
+@@ -0,0 +1,15 @@
++import { defineConfig } from "vite";
++
++export default defineConfig({
++  clearScreen: false,
++  server: {
++    port: 1420,
++    strictPort: true,
++  },
++  envPrefix: ["VITE_", "TAURI_ENV_"],
++  build: {
++    target: process.env.TAURI_ENV_PLATFORM === "windows" ? "chrome105" : "safari13",
++    minify: !process.env.TAURI_ENV_DEBUG ? "esbuild" : false,
++    sourcemap: !!process.env.TAURI_ENV_DEBUG,
++  },
++});
+diff --git a/index.html b/index.html
+new file mode 100644
+index 0000000..13e1ca0
+--- /dev/null
++++ b/index.html
+@@ -0,0 +1,12 @@
++<!doctype html>
++<html lang="en">
++  <head>
++    <meta charset="UTF-8" />
++    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
++    <meta name="theme-color" content="#f4f0e7" />
++    <title>Drawing Board</title>
++  </head>
++  <body>
++    <div id="app"></div>
++    <script type="module" src="/src/main.ts"></script>
++  </body>
++</html>
+diff --git a/public/.gitkeep b/public/.gitkeep
+new file mode 100644
+index 0000000..e69de29
+diff --git a/src/main.ts b/src/main.ts
+new file mode 100644
+index 0000000..bb13ad2
+--- /dev/null
++++ b/src/main.ts
+@@ -0,0 +1,232 @@
++import "./styles.css";
++import risingEntrepreneur from "../Architecture/Rising Entrepreneur.png";
++
++type SectionId = "sanctuary" | "board-room" | "studio";
++type View = "home" | "section" | "tool" | "meditation";
++
++interface Tool {
++  title: string;
++  description: string;
++  label: string;
++}
++
++interface Section {
++  title: string;
++  heading: string;
++  description: string;
++  tools: Tool[];
++}
++
++const sections: Record<SectionId, Section> = {
++  sanctuary: {
++    title: "Sanctuary",
++    heading: "Begin with awareness.",
++    description: "A quiet room to arrive before the work begins.",
++    tools: [
++      { title: "Morning Meditation", description: "A guided moment to settle, notice, and choose an intention.", label: "Practice" },
++      { title: "Journal", description: "Make space for what is present and what matters today.", label: "Reflect" },
++      { title: "Constitution", description: "Return to the principles that hold the work together.", label: "Ground" },
++    ],
++  },
++  "board-room": {
++    title: "Board Room",
++    heading: "Make the important moves visible.",
++    description: "A clear room for commitments, conversations, and work in motion.",
++    tools: [
++      { title: "Today's Focus", description: "Must Do · Waiting On · Wins", label: "Plan" },
++      { title: "DealDocs", description: "Recent conversations · Follow-ups · Pipeline", label: "Relationships" },
++      { title: "Prospect Radar", description: "Yellow Pages · Apollo · LinkedIn · Lead imports", label: "Prospecting" },
++      { title: "Analytics", description: "Calls made · Response rate · Website traffic · Revenue trends", label: "Measure" },
++      { title: "Projects", description: "WordPress sites · Client work · Internal development", label: "Build" },
++    ],
 +  },
 +  studio: {
-+    title: "Turn the work into something shareable.",
-+    lead: "A focused collection of creative tools and working surfaces.",
-+    tools: ["Article Architect", "Social Vibe", "Image Roll", "Video Edits", "Plan Notes"],
++    title: "Studio",
++    heading: "Turn the work into something shareable.",
++    description: "A focused collection of creative tools and working surfaces.",
++    tools: [
++      { title: "Article Architect", description: "Long-form writing.", label: "Write" },
++      { title: "Social Vibe", description: "Facebook · LinkedIn · Instagram · X", label: "Publish" },
++      { title: "Image Roll", description: "Prompt library · Editorial images · Hero graphics", label: "Create" },
++      { title: "Video Edits", description: "Shotcut · DaVinci · Captions · Shorts", label: "Edit" },
++      { title: "Plan Notes", description: "Whiteboard · Brainstorming · Mind maps · Meeting notes", label: "Think" },
++    ],
 +  },
 +};
- 
--window.addEventListener("DOMContentLoaded", () => {
--  greetInputEl = document.querySelector("#greet-input");
--  greetMsgEl = document.querySelector("#greet-msg");
--  document.querySelector("#greet-form")?.addEventListener("submit", (e) => {
--    e.preventDefault();
--    greet();
--  });
--});
-+const details: Record<string, string> = {
-+  "Today's Focus": "Must Do · Waiting On · Wins",
-+  DealDocs: "Recent conversations · Follow-ups · Pipeline",
-+  "Prospect Radar": "Yellow Pages · Apollo · LinkedIn · Lead imports",
-+  Analytics: "Calls made · Response rate · Website traffic · Revenue trends",
-+  Projects: "WordPress sites · Client work · Internal development",
-+  "Article Architect": "Long-form writing.",
-+  "Social Vibe": "Facebook · LinkedIn · Instagram · X",
-+  "Image Roll": "Prompt library · Editorial images · Hero graphics",
-+  "Video Edits": "Shotcut · DaVinci · Captions · Shorts",
-+  "Plan Notes": "Whiteboard · Brainstorming · Mind maps · Meeting notes",
-+  Journal: "Make space for what is present and what matters today.",
-+  Constitution: "Return to the principles that hold the work together.",
-+};
 +
-+let space: Space | null = null;
-+let tool: string | null = null;
++let view: View = "home";
++let selectedSection: SectionId | null = null;
++let selectedTool: Tool | null = null;
 +let meditationStep = 0;
 +
-+const app = document.querySelector<HTMLDivElement>("#app")!;
++const app = document.querySelector<HTMLDivElement>("#app");
 +
-+function shell(content: string) {
-+  return `<div class="app-shell">
-+    <header class="topbar">
-+      <button class="brand" data-home><b>DB</b> Drawing Board</button>
-+      <span>${space ? rooms[space].title : "A deliberate workspace"}</span>
-+      <button class="quiet-button" data-meditation>Morning meditation ↗</button>
-+    </header>${content}</div>`;
++function render() {
++  if (!app) return;
++
++  const content =
++    view === "home" ? homeView() :
++    view === "section" ? sectionView() :
++    view === "meditation" ? meditationView() :
++    toolView();
++
++  app.innerHTML = `${header()}${content}`;
++  bindEvents();
 +}
 +
-+function home() {
-+  return shell(`<main class="home">
-+    <p class="eyebrow">One chapter. One room. One careful stone at a time.</p>
-+    <h1>A place to see the whole of your work.</h1>
-+    <p class="lead">Enter through the room that serves this moment.</p>
-+    <section class="cards">
-+      <button class="room sanctuary" data-space="sanctuary">
-+        <img src="${risingEntrepreneur}" alt="Sunrise landscape" />
-+        <span><small>Sanctuary</small><strong>Begin with awareness.</strong><em>Meditation · Journal · Constitution</em></span>
++function header() {
++  const label = selectedSection ? sections[selectedSection].title : "A deliberate workspace";
++  return `<header class="topbar">
++    <button class="brand" data-action="home" aria-label="Return to Drawing Board">
++      <span class="brand-mark">DB</span><span>Drawing Board</span>
++    </button>
++    <span class="chapter">${label}</span>
++    <button class="quiet-button" data-action="meditation">Morning meditation <span>↗</span></button>
++  </header>`;
++}
++
++function homeView() {
++  return `<main class="home">
++    <section class="intro">
++      <p class="eyebrow">One chapter. One room. One careful stone at a time.</p>
++      <h1>A place to see the whole of your work.</h1>
++      <p>Enter through the room that serves this moment.</p>
++    </section>
++    <section class="room-cards" aria-label="Drawing Board rooms">
++      <button class="room-card sanctuary-card" data-section="sanctuary">
++        <img src="${risingEntrepreneur}" alt="Sunrise in a mountain landscape" />
++        <span class="room-copy"><small>Sanctuary</small><strong>Begin with awareness.</strong><em>Meditation · Journal · Constitution</em></span>
 +      </button>
-+      <button class="room boardroom" data-space="boardroom">
-+        <span><small>Board Room</small><strong>Bring the day into focus.</strong><em>Priorities · Pipeline · Projects</em></span>
++      <button class="room-card board-room-card" data-section="board-room">
++        <span class="room-copy"><small>Board Room</small><strong>Bring the day into focus.</strong><em>Priorities · Pipeline · Projects</em></span>
 +      </button>
-+      <button class="room studio" data-space="studio">
-+        <span><small>Studio</small><strong>Make something useful.</strong><em>Writing · Images · Video · Notes</em></span>
++      <button class="room-card studio-card" data-section="studio">
++        <span class="room-copy"><small>Studio</small><strong>Make something useful.</strong><em>Writing · Images · Video · Notes</em></span>
 +      </button>
 +    </section>
-+  </main>`);
++  </main>`;
 +}
 +
-+function roomView() {
-+  const room = rooms[space!];
-+  return shell(`<main class="page">
-+    <button class="back" data-home>← All rooms</button>
-+    <p class="eyebrow">${space}</p><h1>${room.title}</h1><p class="lead">${room.lead}</p>
-+    <section class="tools">${room.tools.map((item, index) => `
-+      <button class="tool" data-tool="${item}">
-+        <small>0${index + 1}</small><strong>${item}</strong>
-+        <span>${details[item] ?? "A guided moment to settle and choose your intention."}</span><i>↗</i>
++function sectionView() {
++  const section = sections[selectedSection!];
++  return `<main class="page">
++    <button class="back" data-action="home">← All rooms</button>
++    <section class="page-heading">
++      <p class="eyebrow">${section.title}</p>
++      <h1>${section.heading}</h1>
++      <p>${section.description}</p>
++    </section>
++    <section class="tool-grid">
++      ${section.tools.map((tool, index) => `<button class="tool-card" data-tool="${tool.title}">
++        <span class="tool-number">0${index + 1}</span><span class="tool-label">${tool.label}</span>
++        <strong>${tool.title}</strong><p>${tool.description}</p><i>↗</i>
 +      </button>`).join("")}
 +    </section>
-+  </main>`);
++  </main>`;
 +}
 +
-+function meditation() {
++function meditationView() {
 +  const steps = [
 +    ["Arrive", "Let the day wait at the door. Notice where you are."],
 +    ["Breathe", "Take three unhurried breaths. There is nothing to solve yet."],
 +    ["Notice", "What is asking for your attention beneath the noise?"],
 +    ["Intend", "Name one way you want to show up in the next chapter."],
 +  ];
-+  const [title, copy] = steps[meditationStep];
-+  return shell(`<main class="meditation">
-+    <img src="${risingEntrepreneur}" alt="" /><div class="wash"></div>
-+    <button class="close" data-close>Close</button>
++  const [title, text] = steps[meditationStep];
++  return `<main class="meditation">
++    <img class="meditation-image" src="${risingEntrepreneur}" alt="" />
++    <div class="image-wash"></div>
++    <button class="meditation-close" data-action="section">Close</button>
 +    <section class="meditation-card">
-+      <p class="eyebrow">Morning meditation · ${meditationStep + 1} of 4</p>
-+      <h1>${title}</h1><p>${copy}</p>
-+      <div class="progress"><span style="width:${(meditationStep + 1) * 25}%"></span></div>
-+      <div><button class="text-button" data-previous ${meditationStep === 0 ? "disabled" : ""}>Back</button>
-+      <button class="continue" data-next>${meditationStep === 3 ? "Complete" : "Continue"} →</button></div>
++      <p class="eyebrow">Morning meditation · ${meditationStep + 1} of ${steps.length}</p>
++      <h1>${title}</h1><p>${text}</p>
++      <div class="progress"><span style="width:${((meditationStep + 1) / steps.length) * 100}%"></span></div>
++      <div class="meditation-actions">
++        <button class="text-button" data-action="previous" ${meditationStep === 0 ? "disabled" : ""}>Back</button>
++        <button class="continue-button" data-action="next">${meditationStep === 3 ? "Complete" : "Continue"} →</button>
++      </div>
 +    </section>
-+  </main>`);
++  </main>`;
 +}
 +
-+function placeholder() {
-+  return shell(`<main class="page placeholder">
-+    <button class="back" data-close>← ${space}</button>
-+    <div><p class="eyebrow">Workspace</p><h1>${tool}</h1>
-+    <p class="lead">${details[tool!] ?? "This workspace is ready for its first real connection."}</p>
-+    <hr /><p>This is a focused placeholder in the broad-strokes release. Its dedicated workflow and outside connections can be added one tool at a time.</p></div>
-+  </main>`);
++function toolView() {
++  if (selectedTool?.title === "Article Architect") {
++    const draft = localStorage.getItem("drawing-board.article-draft") ?? "";
++    return `<main class="page article-page">
++      <button class="back" data-action="section">← Studio</button>
++      <p class="eyebrow">Write</p><h1>Article Architect</h1>
++      <p class="page-description">A focused surface for your next long-form idea.</p>
++      <label class="editor-label" for="draft">Working draft</label>
++      <textarea id="draft" placeholder="Start with the idea you want to make clear…">${draft}</textarea>
++      <p class="save-status">Saved locally as you write.</p>
++    </main>`;
++  }
++
++  return `<main class="page placeholder-page">
++    <button class="back" data-action="section">← ${sections[selectedSection!].title}</button>
++    <div><p class="eyebrow">${selectedTool?.label ?? "Workspace"}</p>
++      <h1>${selectedTool?.title}</h1><p>${selectedTool?.description}</p>
++      <hr /><p class="muted">This is a focused placeholder in the broad-strokes release. Its dedicated workflow and outside connections can now be added one tool at a time.</p>
++    </div>
++  </main>`;
 +}
 +
-+function render() {
-+  app.innerHTML = tool === "Morning Meditation" ? meditation() : tool ? placeholder() : space ? roomView() : home();
-+  app.querySelectorAll<HTMLElement>("[data-space]").forEach(el => el.onclick = () => { space = el.dataset.space as Space; render(); });
-+  app.querySelectorAll<HTMLElement>("[data-tool]").forEach(el => el.onclick = () => { tool = el.dataset.tool!; render(); });
-+  app.querySelector<HTMLElement>("[data-home]")?.addEventListener("click", () => { space = null; tool = null; render(); });
-+  app.querySelector<HTMLElement>("[data-meditation]")?.addEventListener("click", () => { space = "sanctuary"; tool = "Morning Meditation"; meditationStep = 0; render(); });
-+  app.querySelector<HTMLElement>("[data-close]")?.addEventListener("click", () => { tool = null; render(); });
-+  app.querySelector<HTMLElement>("[data-next]")?.addEventListener("click", () => { meditationStep = (meditationStep + 1) % 4; if (!meditationStep) tool = null; render(); });
-+  app.querySelector<HTMLElement>("[data-previous]")?.addEventListener("click", () => { meditationStep = Math.max(0, meditationStep - 1); render(); });
++function bindEvents() {
++  app?.querySelectorAll<HTMLElement>("[data-section]").forEach((element) => {
++    element.addEventListener("click", () => {
++      selectedSection = element.dataset.section as SectionId;
++      view = "section";
++      render();
++    });
++  });
++
++  app?.querySelectorAll<HTMLElement>("[data-tool]").forEach((element) => {
++    element.addEventListener("click", () => {
++      selectedTool = sections[selectedSection!].tools.find((tool) => tool.title === element.dataset.tool) ?? null;
++      view = selectedTool?.title === "Morning Meditation" ? "meditation" : "tool";
++      render();
++    });
++  });
++
++  app?.querySelector<HTMLElement>("[data-action='home']")?.addEventListener("click", () => {
++    view = "home"; selectedSection = null; selectedTool = null; render();
++  });
++  app?.querySelector<HTMLElement>("[data-action='section']")?.addEventListener("click", () => {
++    view = selectedSection ? "section" : "home"; selectedTool = null; render();
++  });
++  app?.querySelector<HTMLElement>("[data-action='meditation']")?.addEventListener("click", () => {
++    selectedSection = "sanctuary"; selectedTool = sections.sanctuary.tools[0]; meditationStep = 0; view = "meditation"; render();
++  });
++  app?.querySelector<HTMLElement>("[data-action='previous']")?.addEventListener("click", () => {
++    meditationStep = Math.max(0, meditationStep - 1); render();
++  });
++  app?.querySelector<HTMLElement>("[data-action='next']")?.addEventListener("click", () => {
++    if (meditationStep === 3) { view = "section"; selectedTool = null; } else meditationStep += 1;
++    render();
++  });
++  app?.querySelector<HTMLTextAreaElement>("#draft")?.addEventListener("input", (event) => {
++    localStorage.setItem("drawing-board.article-draft", (event.target as HTMLTextAreaElement).value);
++  });
 +}
 +
 +render();
-diff --git a/Prototype/workbench-app/src/styles.css b/Prototype/workbench-app/src/styles.css
-index 2cf4d21..ce7a4f2 100644
---- a/Prototype/workbench-app/src/styles.css
-+++ b/Prototype/workbench-app/src/styles.css
-@@ -1,97 +1,59 @@
--.logo.vite:hover {
--  filter: drop-shadow(0 0 2em #747bff);
--}
--
--.logo.typescript:hover {
--  filter: drop-shadow(0 0 2em #2d79c7);
--}
--:root {
--  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
--  font-size: 16px;
--  line-height: 24px;
--  font-weight: 400;
--
--  color: #0f0f0f;
--  background-color: #f6f6f6;
--
--  font-synthesis: none;
--  text-rendering: optimizeLegibility;
--  -webkit-font-smoothing: antialiased;
--  -moz-osx-font-smoothing: grayscale;
--  -webkit-text-size-adjust: 100%;
--}
--
--.container {
--  margin: 0;
--  padding-top: 10vh;
--  display: flex;
--  flex-direction: column;
--  justify-content: center;
--  text-align: center;
--}
--
--.logo {
--  height: 6em;
--  padding: 1.5em;
--  will-change: filter;
--  transition: 0.75s;
--}
--
--.logo.tauri:hover {
--  filter: drop-shadow(0 0 2em #24c8db);
--}
--
--.row {
--  display: flex;
--  justify-content: center;
--}
--
--a {
--  font-weight: 500;
--  color: #646cff;
--  text-decoration: inherit;
--}
--
--a:hover {
--  color: #535bf2;
--}
--
--h1 {
--  text-align: center;
--}
--
--input,
--button {
--  border-radius: 8px;
--  border: 1px solid transparent;
--  padding: 0.6em 1.2em;
--  font-size: 1em;
--  font-weight: 500;
--  font-family: inherit;
--  color: #0f0f0f;
--  background-color: #ffffff;
--  transition: border-color 0.25s;
--  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
--}
--
--button {
--  cursor: pointer;
--}
--
--button:hover {
--  border-color: #396cd8;
--}
--button:active {
--  border-color: #396cd8;
--  background-color: #e8e8e8;
--}
--
--input,
--button {
--  outline: none;
--}
--
--#greet-input {
--  margin-right: 5px;
--}
--
--@media (prefers-color-scheme: dark) {
--  :root {
--    color: #f6f6f6;
--    background-color: #2f2f2f;
--  }
--
--  a:hover {
--    color: #24c8db;
--  }
--
--  input,
--  button {
--    color: #ffffff;
--    background-color: #0f0f0f98;
--  }
--  button:active {
--    background-color: #0f0f0f69;
--  }
--}
+diff --git a/src/styles.css b/src/styles.css
+new file mode 100644
+index 0000000..e07dcbf
+--- /dev/null
++++ b/src/styles.css
+@@ -0,0 +1,51 @@
 +@import url("https://fonts.googleapis.com/css2?family=DM+Mono&family=DM+Sans:wght@400;500;600&family=Playfair+Display:wght@500;600&display=swap");
-+:root{font-family:"DM Sans",sans-serif;color:#142936;background:#f5f1e8}*{box-sizing:border-box}body{margin:0}button{font:inherit;border:0;cursor:pointer;color:inherit}.app-shell{min-height:100vh}.topbar{height:80px;padding:0 5.5vw;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #d9ddd7;font-size:13px;color:#64726e}.brand,.quiet-button,.back,.text-button,.close{background:transparent}.brand{display:flex;align-items:center;gap:10px;color:#142936;font-weight:600}.brand b{display:grid;place-items:center;width:30px;height:30px;background:#164c5d;color:#fff;font:10px "DM Mono"}.quiet-button{color:#386575}.home,.page{max-width:1260px;margin:auto;padding:8vh 5.5vw}.eyebrow{font:11px "DM Mono";letter-spacing:.1em;text-transform:uppercase;color:#77827d}.home h1,.page h1,.meditation-card h1{max-width:730px;margin:15px 0;font:500 clamp(42px,6vw,76px)/1 "Playfair Display",serif;letter-spacing:-.06em}.lead{max-width:700px;color:#63716f;font-size:17px;line-height:1.6}.cards{display:grid;grid-template-columns:1.15fr 1fr 1fr;gap:16px;margin-top:55px}.room{position:relative;min-height:375px;overflow:hidden;text-align:left;color:#fff;background:#164c5d;transition:.2s}.room:hover,.tool:hover{transform:translateY(-4px);box-shadow:0 18px 35px #14293625}.room img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(.75)}.sanctuary:after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 35%,#102f38d9)}.boardroom{background:linear-gradient(140deg,#3f1614,#a64d38 60%,#472019)}.studio{background:radial-gradient(circle at 82% 18%,#eab955 0 20%,transparent 21%),#143e46}.room span{z-index:1;position:absolute;bottom:26px;left:26px;right:22px;display:flex;flex-direction:column;gap:8px}.room small{font:10px "DM Mono";letter-spacing:.1em;text-transform:uppercase}.room strong{font:500 30px/1.06 "Playfair Display",serif}.room em{font-size:12px;font-style:normal;opacity:.88}.back{padding:0;color:#62716d}.page>.eyebrow{margin-top:50px}.tools{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:40px}.tool{min-height:205px;position:relative;padding:24px;text-align:left;background:#fffdf9;border:1px solid #dfe2dc}.tool small{font:10px "DM Mono";color:#87918c}.tool strong{display:block;margin:37px 0 9px;font:500 27px "Playfair Display",serif}.tool span{display:block;color:#65736f;font-size:13px;line-height:1.5}.tool i{position:absolute;right:21px;bottom:18px;color:#2b697a;font-style:normal}.placeholder{min-height:calc(100vh - 80px);display:grid;align-content:start;gap:70px}.placeholder>div{max-width:700px}.placeholder hr{width:80px;margin:35px 0;border:0;border-top:2px solid #d6ad55}.placeholder div>p:last-child{max-width:520px;color:#63716f;line-height:1.6}.meditation{min-height:calc(100vh - 80px);position:relative;display:grid;place-items:center;overflow:hidden}.meditation>img,.wash{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.wash{background:linear-gradient(90deg,#0b232ad6,#0b232a45)}.close{position:absolute;z-index:1;right:5.5vw;top:25px;color:#fff}.meditation-card{z-index:1;width:min(525px,90vw);padding:42px;background:#0d2f33c4;border:1px solid #ffffff44;color:#f9f5ec}.meditation-card .eyebrow{color:#d7d4bf}.meditation-card h1{font-size:58px}.meditation-card>p:not(.eyebrow){line-height:1.6}.progress{height:2px;background:#ffffff44;margin:32px 0}.progress span{display:block;height:100%;background:#e9c76c}.meditation-card>div:last-child{display:flex;justify-content:space-between}.text-button{color:#d9dfd5}.continue{padding:12px 17px;background:#f4e3ad;color:#173b3c;font-weight:600}@media(max-width:800px){.topbar{padding:0 24px}.topbar>span{display:none}.home,.page{padding-left:24px;padding-right:24px}.cards,.tools{grid-template-columns:1fr}.room{min-height:275px}.meditation{align-items:end}.meditation-card{margin:24px;padding:28px}}
-diff --git a/Prototype/workbench-app/src-tauri/tauri.conf.json b/Prototype/workbench-app/src-tauri/tauri.conf.json
-index b39c584..36f3830 100644
---- a/Prototype/workbench-app/src-tauri/tauri.conf.json
-+++ b/Prototype/workbench-app/src-tauri/tauri.conf.json
-@@ -1,6 +1,6 @@
- {
-   "$schema": "https://schema.tauri.app/config/2",
--  "productName": "workbench-app",
++
++:root{font-family:"DM Sans",sans-serif;color:#142936;background:#f4f0e7;font-synthesis:none;text-rendering:optimizeLegibility}*{box-sizing:border-box}body{margin:0;min-width:320px}button,textarea{font:inherit;color:inherit}button{border:0;cursor:pointer}.topbar{height:80px;padding:0 5.5vw;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #daddd6}.brand,.quiet-button,.back,.text-button,.meditation-close{background:transparent}.brand{display:flex;align-items:center;gap:10px;font-weight:600}.brand-mark{display:grid;place-items:center;width:30px;height:30px;background:#164c5d;color:#fff;font:10px "DM Mono"}.chapter,.eyebrow{font:11px "DM Mono";letter-spacing:.1em;text-transform:uppercase;color:#737e79}.quiet-button{font-size:13px;color:#386575}.home,.page{max-width:1260px;margin:auto;padding:8vh 5.5vw}.intro{max-width:700px}.intro h1,.page h1,.meditation-card h1{margin:16px 0;font:500 clamp(43px,6vw,76px)/1 "Playfair Display",serif;letter-spacing:-.06em}.intro>p:last-child,.page-heading>p,.page-description{font-size:17px;line-height:1.6;color:#62706c}.room-cards{display:grid;grid-template-columns:1.15fr 1fr 1fr;gap:16px;margin-top:56px}.room-card{position:relative;min-height:375px;overflow:hidden;text-align:left;color:#fff;transition:.2s}.room-card:hover,.tool-card:hover{transform:translateY(-4px);box-shadow:0 18px 35px #14293625}.room-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(.78)}.sanctuary-card:after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 35%,#102f38d9)}.board-room-card{background:linear-gradient(140deg,#3f1614,#a64d38 60%,#472019)}.studio-card{background:radial-gradient(circle at 82% 18%,#eab955 0 20%,transparent 21%),#143e46}.room-copy{z-index:1;position:absolute;bottom:26px;left:26px;right:22px;display:flex;flex-direction:column;gap:8px}.room-copy small,.tool-number,.tool-label{font:10px "DM Mono";letter-spacing:.1em;text-transform:uppercase}.room-copy strong{font:500 30px/1.06 "Playfair Display",serif}.room-copy em{font-size:12px;font-style:normal;opacity:.86}.back{padding:0;color:#61706b}.page-heading{margin:50px 0 40px;max-width:720px}.tool-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.tool-card{position:relative;min-height:210px;padding:24px;text-align:left;background:#fffdf9;border:1px solid #dfe2dc;transition:.2s}.tool-number{color:#89938e}.tool-label{float:right;color:#386575}.tool-card strong{display:block;margin:38px 0 9px;font:500 28px "Playfair Display",serif}.tool-card p{margin:0;max-width:270px;font-size:13px;line-height:1.55;color:#65736f}.tool-card i{position:absolute;right:22px;bottom:18px;color:#2b697a;font-size:20px;font-style:normal}.meditation{min-height:calc(100vh - 80px);position:relative;display:grid;place-items:center;overflow:hidden}.meditation-image,.image-wash{position:absolute;inset:0;width:100%;height:100%}.meditation-image{object-fit:cover}.image-wash{background:linear-gradient(90deg,#0b232ad9,#0b232a42)}.meditation-close{position:absolute;z-index:1;right:5.5vw;top:26px;color:#fff}.meditation-card{z-index:1;width:min(525px,90vw);padding:42px;background:#0d2f33c4;border:1px solid #ffffff44;color:#f9f5ec}.meditation-card .eyebrow{color:#d7d4bf}.meditation-card h1{font-size:58px}.meditation-card>p:not(.eyebrow){line-height:1.6}.progress{height:2px;background:#ffffff44;margin:32px 0}.progress span{display:block;height:100%;background:#e9c76c}.meditation-actions{display:flex;justify-content:space-between}.text-button{color:#d9dfd5}.continue-button{padding:12px 17px;border:0;background:#f4e3ad;color:#173b3c;font-weight:600}.placeholder-page{min-height:calc(100vh - 80px);display:grid;align-content:start;gap:70px}.placeholder-page>div{max-width:700px}.placeholder-page hr{width:80px;margin:35px 0;border:0;border-top:2px solid #d6ad55}.muted{max-width:520px;line-height:1.6;color:#63716f}.article-page textarea{display:block;width:min(850px,100%);min-height:380px;margin-top:12px;padding:22px;resize:vertical;border:1px solid #cfd6d0;background:#fffdf9;line-height:1.65}.editor-label,.save-status{display:block;margin-top:30px;font:11px "DM Mono";letter-spacing:.08em;text-transform:uppercase;color:#6f7b76}.save-status{margin-top:10px;color:#83908a}@media(max-width:800px){.topbar{padding:0 24px}.chapter{display:none}.home,.page{padding-left:24px;padding-right:24px}.room-cards,.tool-grid{grid-template-columns:1fr}.room-card{min-height:275px}.meditation{align-items:end}.meditation-card{margin:24px;padding:28px}.meditation-card h1{font-size:48px}}
+diff --git a/src-tauri/Cargo.toml b/src-tauri/Cargo.toml
+new file mode 100644
+index 0000000..edfe754
+--- /dev/null
++++ b/src-tauri/Cargo.toml
+@@ -0,0 +1,20 @@
++[package]
++name = "drawing-board"
++version = "0.1.0"
++description = "A focused desktop workspace"
++authors = ["Drawing Board"]
++edition = "2021"
++rust-version = "1.77.2"
++
++[lib]
++name = "drawing_board_lib"
++crate-type = ["staticlib", "cdylib", "rlib"]
++
++[build-dependencies]
++tauri-build = { version = "2.0.0", features = [] }
++
++[dependencies]
++tauri = { version = "2.0.0", features = [] }
++serde = { version = "1.0", features = ["derive"] }
++serde_json = "1.0"
+diff --git a/src-tauri/build.rs b/src-tauri/build.rs
+new file mode 100644
+index 0000000..e17e62d
+--- /dev/null
++++ b/src-tauri/build.rs
+@@ -0,0 +1,3 @@
++fn main() {
++    tauri_build::build()
++}
+diff --git a/src-tauri/src/lib.rs b/src-tauri/src/lib.rs
+new file mode 100644
+index 0000000..b3b98fc
+--- /dev/null
++++ b/src-tauri/src/lib.rs
+@@ -0,0 +1,8 @@
++#[cfg_attr(mobile, tauri::mobile_entry_point)]
++pub fn run() {
++    tauri::Builder::default()
++        .run(tauri::generate_context!())
++        .expect("error while running Drawing Board");
++}
+diff --git a/src-tauri/src/main.rs b/src-tauri/src/main.rs
+new file mode 100644
+index 0000000..99786e3
+--- /dev/null
++++ b/src-tauri/src/main.rs
+@@ -0,0 +1,3 @@
++fn main() {
++    drawing_board_lib::run();
++}
+diff --git a/src-tauri/capabilities/default.json b/src-tauri/capabilities/default.json
+new file mode 100644
+index 0000000..a68bfd1
+--- /dev/null
++++ b/src-tauri/capabilities/default.json
+@@ -0,0 +1,8 @@
++{
++  "$schema": "../gen/schemas/desktop-schema.json",
++  "identifier": "main-capability",
++  "description": "Capabilities for the main Drawing Board window",
++  "windows": ["main"],
++  "permissions": [
++    "core:default"
++  ]
++}
+diff --git a/src-tauri/tauri.conf.json b/src-tauri/tauri.conf.json
+new file mode 100644
+index 0000000..4e52ce6
+--- /dev/null
++++ b/src-tauri/tauri.conf.json
+@@ -0,0 +1,31 @@
++{
++  "$schema": "https://schema.tauri.app/config/2",
 +  "productName": "Drawing Board",
-   "version": "0.1.0",
-   "identifier": "com.creamydigital.workbench",
-   "build": {
-@@ -12,9 +12,11 @@
-   "app": {
-     "withGlobalTauri": true,
-     "windows": [
-       {
--        "title": "workbench-app",
--        "width": 800,
--        "height": 600
++  "version": "0.1.0",
++  "identifier": "com.drawingboard.app",
++  "build": {
++    "beforeDevCommand": "npm run dev",
++    "devUrl": "http://localhost:1420",
++    "beforeBuildCommand": "npm run build",
++    "frontendDist": "../dist"
++  },
++  "app": {
++    "withGlobalTauri": false,
++    "windows": [
++      {
++        "label": "main",
 +        "title": "Drawing Board",
 +        "width": 1280,
 +        "height": 820,
 +        "minWidth": 720,
-+        "minHeight": 600
-       }
-     ],
-     "security": {
++        "minHeight": 600,
++        "resizable": true
++      }
++    ],
++    "security": {
++      "csp": null
++    }
++  },
++  "bundle": {
++    "active": true,
++    "targets": "all"
++  }
++}
+diff --git a/docs/Codex-Startup.md b/docs/Codex-Startup.md
+new file mode 100644
+index 0000000..b8a71d3
+--- /dev/null
++++ b/docs/Codex-Startup.md
+@@ -0,0 +1,30 @@
++# Codex Startup
++
++The application is **Drawing Board**.
++
++Before making changes:
++
++1. Read this document.
++2. Read `README.md`.
++3. Read `docs/Architecture.md`.
++4. Inspect the current Git-tracked repository layout.
++
++Use the current repository layout exactly as it exists in Git. The root-level
++`src/`, `src-tauri/`, `public/`, and supporting configuration files are the
++Drawing Board application source tree.
++
++The `article-writer/`, `Architecture/`, `Constitution/`, `Book/`, `Journal/`,
++and `docs/` directories are project resources and documentation, not Tauri
++application source.
++
++Do not reference or modify deprecated folders, including `Prototype/`.
++Preserve unrelated working-tree changes.
++
++Implement incrementally. Generate unified diffs unless the user explicitly
++instructs Codex to apply changes.
++
++Workflow:
++
++1. User defines the feature.
++2. Codex generates a patch.
++3. User reviews and applies it.
++4. Build and test.
++5. Commit intentionally.
+diff --git a/docs/Architecture.md b/docs/Architecture.md
+new file mode 100644
+index 0000000..0a75b0c
+--- /dev/null
++++ b/docs/Architecture.md
+@@ -0,0 +1,36 @@
++# Drawing Board Architecture
++
++## Purpose
++
++Drawing Board is a desktop application for focused thinking, creative work,
++business operations, and AI-assisted productivity.
++
++## Primary Rooms
++
++- **Sanctuary**: Morning Meditation, Journal, Constitution.
++- **Board Room**: Today's Focus, DealDocs, Prospect Radar, Analytics, Projects.
++- **Studio**: Article Architect, Social Vibe, Image Roll, Video Edits, Plan Notes.
++
++## Broad-Strokes Workflow
++
++1. Create the Tauri shell with theme and navigation.
++2. Present the three primary rooms.
++3. Reveal tools when a room is selected.
++4. Implement focused placeholder pages.
++5. Connect real functionality one tool at a time, beginning with Article Architect.
++
++## Current Scope
++
++The first application increment provides:
++
++- Root-level Tauri v2 source.
++- Navigable Sanctuary, Board Room, and Studio views.
++- A progressive Morning Meditation flow.
++- A local, auto-saved Article Architect draft surface.
++- Placeholder pages for all remaining tools.
++
++External applications and services are deliberately not linked yet. Those
++connections should be introduced individually as each tool receives its
++dedicated workflow.
