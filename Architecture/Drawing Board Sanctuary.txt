@@ -1,0 +1,98 @@
+Drawing Board
+│
+├── Sanctuary
+│      Morning Meditation
+│      Journal
+│      Constitution
+│
+├── Board Room
+│      Today's Focus
+│      DealDocs
+│      Prospect Radar
+│      Analytics
+│      Projects
+│
+└── Studio
+       Article Architect
+       Social Vibe
+       Image Roll
+       Video Edits
+       Plan Notes
+       
+       
+###
+
+Each of these three section folders and Drawing Board has a card. Drawing board is white, blue and tan.
+
+Cards
+
+Sanctuary card has the image of the Rising Entrepreneur image. Another description is A full-width sunrise image. "Begin with awareness." Click on the card and everything is built into, clickable and progress-able, according to the labels in the image.
+
+Board Room is white red and brown. It shows these major categories in an image of a clean robust boardroom. Click on one to reveal the subcategories. The subcategories show up in a card.
+
+Today's Focus
+
+-The day's priorities.
+-three large cards: Must Do, Waiting On, Wins.
+
+DealDocs
+
+-Opens your Airtable/CRM workspace.
+-Recent conversations.
+-Follow-ups.
+-Pipeline.
+
+Prospect Radar
+
+-Yellow Pages
+-Apollo
+-LinkedIn
+-Lead imports
+
+Analytics
+
+-Calls made
+-Response rate
+-Website traffic
+-Revenue trends
+
+Projects
+
+-WordPress sites
+-Client work
+-Internal development
+
+
+Studio
+
+-Article Architect
+-Long-form writing.
+
+Social Vibe
+
+-Facebook
+-LinkedIn
+-Instagram
+-X
+
+Image Roll
+
+-Prompt library
+-Editorial images
+-Hero graphics
+
+Video Edits
+
+-Shotcut
+-DaVinci
+-Captions
+-Shorts
+
+Plan Notes
+
+-Whiteboard
+-Brainstorming
+-Mind maps
+-Meeting notes
+
+We'll build links later to routines, websites and apps for each of the subcategories.

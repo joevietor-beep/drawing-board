@@ -1,0 +1,24 @@
+Create the Tauri shell
+	Application window
+	Theme
+	Navigation layout
+	
+Build the three primary cards
+	Drawing Board
+	Sanctuary
+	Board Room
+	Studio
+	
+Implement navigation
+	Clicking a primary card reveals its subcategories
+	
+Create placeholder pages
+	Today's Focus
+	DealDocs
+	Article Architect
+	Social Vibe
+	etc.
+	
+Connect real functionality
+	Start with Article Architect.
+	Then add the remaining tools one by one.
